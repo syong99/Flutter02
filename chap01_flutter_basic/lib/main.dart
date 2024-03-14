@@ -10,51 +10,68 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'App타이틀',
-        //App의 전반적인 테마를 설정한다.
-        theme: ThemeData(
-          //텍스트의 style을 미리 설정하고 호출해 사용 가능하다.
-          textTheme: TextTheme(
-            bodyText1: TextStyle(
-              fontWeight: FontWeight.bold,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Green-touch'),
+          backgroundColor: Colors.green.shade200,
+        ),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 100,
+                          color: Colors.green.shade100,
+                          child: Text(''),
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.all(20),
+                          padding: EdgeInsets.only(bottom: 20),
+                        ),
+                        Text(
+                          '식물 갤러리',
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
+                      ],
+                    ),
+                    Icon(
+                      Icons.compost,
+                      color: Colors.green,
+                      size: 50,
+                    ),
+                    Image.asset(
+                      'assets/images/bo.png',
+                    ),
+                  ],
+                ),
+                Image.network(
+                  'https://gratisography.com/wp-content/uploads/2023/10/gratisography-cool-cat-800x525.jpg',
+                ),
+                Image.network(
+                    'https://gratisography.com/wp-content/uploads/2023/05/gratisography-colorful-cat-free-stock-photo-800x525.jpg'),
+                TextField(
+                    decoration: InputDecoration(labelText: 'Input'),
+                    //입력폼에 (text)에 값이 변경될경우 작동한다.
+                    onChanged: (text) {
+                      print(text);
+                    },
+                    //작성중 엔터를 눌렀을 경우 작동한다.
+                    onSubmitted: (text) {
+                      print("enter를 눌렀습니다. 입력값 : $text");
+                    })
+              ],
             ),
           ),
         ),
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text('Green-Touch'),
-            backgroundColor: Colors.white,
-          ),
-          body: Container(
-            color: Colors.green.shade200,
-            child: Center(
-              child: Text('식물 갤러리'),
-            ),
-          ),
-          // BottomNavigationBar
-          bottomNavigationBar: BottomNavigationBar(
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.business),
-                label: 'business',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.school),
-                label: 'school',
-              ),
-            ],
-          ),
-          // FloatingActionButton
-          floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.access_alarm),
-              onPressed: () => {
-                    print('hello'),
-                  }),
-        ));
+      ),
+    );
   }
 }
