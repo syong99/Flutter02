@@ -23,11 +23,14 @@ class MyApp extends StatelessWidget {
         ),
         home: Scaffold(
           appBar: AppBar(
-            title: Text('Appbar'),
-            backgroundColor: Colors.blue,
+            title: Text('Green-Touch'),
+            backgroundColor: Colors.white,
           ),
-          body: Center(
-            child: Text('iphone 22'),
+          body: Container(
+            color: Colors.green.shade200,
+            child: Center(
+              child: Text('식물 갤러리'),
+            ),
           ),
           // BottomNavigationBar
           bottomNavigationBar: BottomNavigationBar(
