@@ -31,7 +31,6 @@ class TestScreen extends StatelessWidget {
     Introduction(
       title: '수료 후의 나',
       subTitle: '수료 후 어려운 과정을 무사히 마쳤다는 기분의 따봉',
-      subTitleTextStyle: ,
       imageUrl: 'assets/images/bo.png',
     ),
     Introduction(
