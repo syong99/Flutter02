@@ -41,7 +41,18 @@ class TestScreen extends StatelessWidget {
   final List<Introduction> list = [
     Introduction(
       title: '현재의 나',
+      titleTextStyle: TextStyle(
+          color: Colors.green,
+          fontSize: 50,
+          fontFamily: 'MadimiOne',
+          fontWeight: FontWeight.w900),
       subTitle: '만족하진 못하지만 어쩌 해 나가는 모습이 자랑스러운 따봉',
+      subTitleTextStyle: TextStyle(
+        color: Colors.purple,
+        fontSize: 100,
+        fontFamily: 'MadimiOne',
+        fontWeight: FontWeight.w300,
+      ),
       imageUrl: 'assets/images/bo.png',
     ),
     Introduction(
