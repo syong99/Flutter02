@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -7,119 +8,200 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+//상태 클래스
+class _HomePageState extends State<HomePage> {
+  List<ToDo> toDoList = [];
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        backgroundColor: Colors.green.shade100,
+        title: Text("ToDoList"),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
+      body: toDoList.isEmpty
+          ? Center(
+              child: Text('To Do List'),
+            )
+          : ListView.builder(
+              itemCount: toDoList.length,
+              itemBuilder: (context, index) {
+                ToDo toDo = toDoList[index];
+
+                return ListTile(
+                  title: Text(
+                    toDo.job,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: toDo.isDone ? Colors.grey : Colors.black,
+                      decoration: toDo.isDone
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                    ),
+                  ),
+                  trailing: IconButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('삭제하시겠습니까?'),
+                                actions: [
+                                  //취소버튼
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        '취소',
+                                        style: TextStyle(color: Colors.grey),
+                                      )),
+                                  TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          toDoList.removeAt(index);
+                                        });
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        '삭제',
+                                        style: TextStyle(color: Colors.red),
+                                      ))
+                                ],
+                              );
+                            });
+                      },
+                      icon: Icon(CupertinoIcons.delete)),
+                  onTap: () {
+                    //아이템 클릭시
+                    setState(() {
+                      toDo.isDone = !toDo.isDone;
+                    });
+                  },
+                );
+              }),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        onPressed: () async {
+          String? job = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => CreatePage()),
+          );
+          if (job != null) {
+            setState(() {
+              ToDo newToDo = ToDo(false, job);
+              toDoList.add(newToDo);
+            });
+          }
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
+}
+
+class CreatePage extends StatefulWidget {
+  const CreatePage({super.key});
+
+  @override
+  State<CreatePage> createState() => _CreatePageState();
+}
+
+class _CreatePageState extends State<CreatePage> {
+  // TextFiled의 값을 가져올 때 사용
+  TextEditingController textEditingController = TextEditingController();
+
+  //경고 메세지
+  String? error;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green.shade100,
+        title: Text(
+          'ToDoList 작성 페이지',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(CupertinoIcons.chevron_back)),
+      ),
+      body: Column(
+        //텍스트 입력창
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              //화면이 나왔을 경우, 입력창에 커서가 바로 오게 하는 기능ㅇ
+              controller: textEditingController,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: "할 일을 입력하세요.",
+                errorText: error,
+              ),
+            ),
+          ),
+
+          // Row,Column등에서 widget 사이에 빈 공간을 넣기 위해 사용
+          SizedBox(
+            height: 20,
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            // sizedBox : child widget의 size를 강제하기 위해
+            child: SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: ElevatedButton(
+                onPressed: () {
+                  //추가히기 버튼을 클릭하면 작동
+                  String toDo = textEditingController.text;
+                  if (toDo.isEmpty) {
+                    setState(() {
+                      error = "내용을 입력해주세요.";
+                    });
+                  } else {
+                    setState(() {
+                      error = null;
+                    });
+                  }
+                  Navigator.pop(context, toDo);
+                },
+                child: Text(
+                  '추가하기',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+//ToDo 클래스
+class ToDo {
+  String job;
+  bool isDone;
+
+  ToDo(this.isDone, this.job);
 }
