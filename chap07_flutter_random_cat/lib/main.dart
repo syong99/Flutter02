@@ -2,8 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+import 'favoritePage.dart';
+
+void main() async {
   runApp(
     MultiProvider(
       providers: [
@@ -36,12 +39,13 @@ class CatService extends ChangeNotifier {
 
   //CatService 생성자
   CatService() {
+    saveData();
     getRandomCatImages();
   }
 //고양이 이미지 10개 가져오는 메소드
   void getRandomCatImages() async {
     String path =
-        "https://api.thecatapi.com/v1/images/search?limit=10&mime_types=gif";
+        "https://api.thecatapi.com/v1/images/search?limit=10&mime_types=jpg";
     var result = await Dio().get(path);
     print(result.data);
     for (int i = 0; i < result.data.length; i++) {
@@ -62,7 +66,6 @@ class CatService extends ChangeNotifier {
     } else {
       favoriteCatImages.add(catImage);
     }
-
     notifyListeners();
   }
 }
@@ -85,10 +88,16 @@ class HomePage extends StatelessWidget {
               IconButton(
                   onPressed: () {
                     // 아이콘 버튼 눌렀을 때 동작
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FavoritePage(
+                              favoriteCatImages: catService.favoriteCatImages)),
+                    );
                   },
                   icon: Icon(
                     Icons.favorite,
-                    color: Colors.white,
+                    color: Colors.red,
                   ))
             ],
           ),
