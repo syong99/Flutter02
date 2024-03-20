@@ -1,23 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'main.dart';
+import '../service/catService.dart';
+import 'favoritePage.dart';
 
-void saveData() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setStringList('favoriteCatImages', CatService().favoriteCatImages);
-}
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
-class FavoritePage extends StatefulWidget {
-  const FavoritePage({super.key, required List<String> favoriteCatImages});
-
-  @override
-  State<FavoritePage> createState() => _FavoritePageState();
-}
-
-class _FavoritePageState extends State<FavoritePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<CatService>(
@@ -32,7 +22,12 @@ class _FavoritePageState extends State<FavoritePage> {
             actions: [
               IconButton(
                   onPressed: () {
-                    // 아이콘 버튼 눌렀을 때 동작
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FavoritePage(
+                              favoriteCatImages: catService.favoriteCatImages)),
+                    );
                   },
                   icon: Icon(
                     Icons.favorite,
@@ -40,17 +35,29 @@ class _FavoritePageState extends State<FavoritePage> {
                   ))
             ],
           ),
+          //GridView count 생성자로, 그리드 내 아이템 수를 기반으로 레이아웃을 구성할 수 있다.
           body: GridView.count(
+            //크로스축으로 아이템 2개씩 배치되도록 설정
             crossAxisCount: 2,
+            //그리드의 주축(세로) 사이의 아이템 공간 설정
             mainAxisSpacing: 8,
+            //그리드의 크로스축(가로) 사이의 아이템 공간 설정
             crossAxisSpacing: 8,
+            //그리드 전체에 대한 패딩 설정
             padding: EdgeInsets.all(8),
-            children:
-                List.generate(catService.favoriteCatImages.length, (index) {
-              String catImage = catService.favoriteCatImages[index];
+            //그리드에 표시될 위젯의 리스트, 10 개의 위젯을 생성
+            children: List.generate(catService.catImages.length, (index) {
+              String catImage = catService.catImages[index];
               return GestureDetector(
                 child: Stack(
                   children: [
+                    /**
+                     * Positioned
+                     * Stack 내에서 자식 위젯의 위치를 정밀하게 제어할 때 사용.
+                     * top, right, bottom, left 네가지 속성으로 위치를 조정한다.
+                     * Positioned.fill 4가지 속성이 모두 0으로 설정되며,
+                     * Stack 모든면을 채우도록 설정된다.
+                     */
                     Positioned.fill(
                       child: Image.network(
                         catImage,
@@ -68,6 +75,9 @@ class _FavoritePageState extends State<FavoritePage> {
                         ))
                   ],
                 ),
+                onTap: () {
+                  catService.toggleFavoriteImage(catImage);
+                },
               );
             }),
           ),
